@@ -3,7 +3,8 @@
 
 \begin{abstract}
 
-Machine learning approaches have become an indispensable part of numerous research fields, providing predictions and explanations of complex multidimensional datasets. In this paper, we focus on developing an approach for detecting whether an event corresponds to the decay of the Higgs boson or not, based on features extracted from the ATLAS experiment performed at CERN. Our best approach uses regularized logistic regression with splitting on the number of jets, feature expansion, median imputing, and outlier bounding. It achieves $0.831\%$ accuracy on the Higgs boson machine learning challenge at AIcrowd platform.\footnote{\hyperlink{AIcrowd}{https://www.aicrowd.com/challenges/epfl-machine-learning-higgs/leaderboards}} The source code of this project is available on GitHub \footnote{https://github.com/hhildaa/EPFL\_ML\_project}.
+Machine learning approaches have become an indispensable part of numerous research fields, providing predictions and explanations of complex multidimensional datasets. In this paper, we focus on developing an approach for detecting whether an event corresponds to the decay of the Higgs boson or not, based on features extracted from the ATLAS experiment performed at CERN. Our best approach uses regularized logistic regression with splitting on the number of jets, feature expansion, median imputing, and outlier bounding. It achieves $0.831\%$ accuracy on the Higgs boson machine learning challenge at AIcrowd platform.\footnote{\hyperlink{AIcrowd}{https://www.aicrowd.com/challenges/epfl-machine-learning-higgs/leaderboards}} The source code of this project is available on GitHub.\footnote{https://github.com/CS-433/ml-project-1-brave\_tigers}
+% \footnote{https://github.com/hhildaa/EPFL\_ML\_project}
 
 \end{abstract}
 
@@ -14,7 +15,7 @@ Higgs bosons are elementary particles first observed in CERN LHC to prove the th
 
 In order to make accurate predictions, we employ basic machine learning algorithms, such as least squares, logistic regression, and regularized logistic regression. The crucial role to achieving good performance of the mentioned algorithms play pre-processing steps we propose based on prior data exploration.
 
-The paper is structured as follows. In Section \ref{preprocessing}, data exploration is performed. Additionally, we propose data pre-processing steps there to clean the dataset. Section \ref{models} introduces employed models and describes regularized logistic regression in more detail. In Section \ref{experiments}, a comparison of model and ablation study of pre-processing steps is presented. Finally, we conclude the paper in Section \ref{conclusion}. 
+The paper is structured as follows. In Section \ref{preprocessing}, data exploration is performed. Additionally, there we propose data pre-processing steps to clean the dataset. Section \ref{models} introduces employed models and describes regularized logistic regression in more detail. In Section \ref{experiments}, a comparison of model and ablation study of pre-processing steps is presented. Finally, we conclude the paper in Section \ref{conclusion}. 
 
 
 
@@ -26,7 +27,7 @@ The paper is structured as follows. In Section \ref{preprocessing}, data explora
 \section{Data Pre-processing}
 \label{preprocessing}
 
-In this section, we present some characteristics of Higgs boson dataset. Then, we showcase its downsides and propose pre-processing steps to improve the performance of machine learning approaches.
+In this section, we present some characteristics of Higgs boson dataset. Then, we showcase its downsides and propose pre-processing steps to improve the performance of adopted machine learning approaches.
 
 \subsection{Dataset}
 
@@ -42,12 +43,12 @@ According to Boudarious et al. \cite{bourdarious2014}, depending on the number o
 
 \subsection{Feature Expansion (FE)}
 
-Since predictions probably depend also on higher powers of initial features, we expand the feature set with polynomial features up to degree $d$. After that by similar reasoning, the feature set is additionally extended by $\sin$ and $\cos$ of initial features. We tried applying polynomial expansion to $\sin$ and $\cos$ features as well, however, it resulted in inferior performance. We also considered adding cross-terms, nevertheless, that would result in a quadratic number of extra terms, which is not feasible to train due to our computational resources. On the other hand, we do not have enough domain knowledge to select only some informative combinations.
+Since predictions probably depend also on higher powers of initial features, we expand the feature set with polynomial features up to degree $d$. After that by similar reasoning, the feature set is additionally extended by $\sin$ and $\cos$ of initial features. We tried applying polynomial expansion to $\sin$ and $\cos$ features as well, however, it resulted in inferior performance. We also considered adding cross-terms, nevertheless, that would result in a quadratic number of extra terms, which is not feasible to train on our machines due to our computational resources. On the other hand, we do not have enough domain knowledge to select only some informative subset.
 
 
 \subsection{Imputing the Median (IM)}
 
-As a result of our data exploration, we found out that there are a lot of missing values. If we would remove all instances with at least one missing value, only around $20\%$ of data would remain. Therefore, we decided to replace missing values with the median of the non-missing values of that feature. We chose the median because it is robust to the outliers that are still present in the dataset (in contrast to the mean for example).
+As a result of our data exploration, we found out that there are a lot of missing values. If we would remove all instances with at least one missing value, only around $20\%$ of data would remain. Therefore, we rather replace missing values with the median of the non-missing values of that feature. We chose the median because it is robust to the outliers that are still present in the dataset (in contrast to the mean for example).
 
 
 
@@ -59,7 +60,7 @@ Since we noticed that the data is still very noisy, we use Inter-quartile-range 
    min = Q_1 - 1.5 \cdot IQR, \hspace{0.5cm} max = Q_3 + 1.5 \cdot IQR
 \end{equation}
 
-It would also be possible to remove instances that contain one outlier value in any column, however, with this approach we kept only about one fifth of the initial dataset.
+It would also be possible to remove instances that contain one outlier value in any column, however, with this approach we would keep only about $20\%$ of the initial dataset.
 
 
 
@@ -131,7 +132,7 @@ Comparison of models from Section \ref{models} is performed on the dataset with 
 
 
 \paragraph{Results and discussion}
-In Table \ref{comparison-of-methods} we can observe that all considered models perform considerably better than the random guess baseline. By comparing least squares with GD and least squares with SGD, it is evident that stochastic gradient is inferior on this dataset. We hypothesize this occurs due to noisy dataset and the fact that stochastic gradient descent with the batch size of only one is very sensitive to noisy instances. Both logistic regressions outperform other approaches by a large margin, which is not surprising since other approaches are not specialized for classification. Interestingly, the results of logistic regression and regularized logistic are identical. This can be explained by the optimal choice of regularization term $\lambda$ of regularized logistic regression. No matter the number of jets, it is always smaller than $10^{-7}$.
+In Table \ref{comparison-of-methods} we can observe that all considered models perform considerably better than the random guess baseline. By comparing least squares with GD and least squares with SGD, it is evident that stochastic gradient is inferior on this dataset. We hypothesize this occurs due to noisy dataset and the fact that stochastic gradient descent with the batch size of only one is very susceptible to noisy instances. Both logistic regressions outperform other approaches by a large margin, which is not surprising since other approaches are not specialized for classification. Interestingly, the results of logistic regression and regularized logistic are identical. This can be explained by the optimal choice of regularization term $\lambda$ of regularized logistic regression. No matter the number of jets, it is always smaller than $10^{-7}$, which makes it almost unregularized.
 
 
 
@@ -161,17 +162,12 @@ To conduct an ablation study of data pre-processing steps, we employ the best-pe
 
 
 \paragraph{Results and discussion}
-In Table \ref{ablation-study-preprocessing} are shown results when certain pre-processing steps are skipped. Feature expansion is extremely important since without it, performance drops for almost $6\%$. Bounding outlier also results in a significant $2\%$ gain. It turns out splitting on the number of jets still makes a difference, although we expected it to be bigger. Finally, imputing the median does not help a lot, probably because bounding outlier achieves a similar effect.
-
-
-
-
-
+In Table \ref{ablation-study-preprocessing} are shown results when certain pre-processing steps are skipped. Feature expansion is extremely important since without it, performance drops for almost $6\%$. This indicates higher powers, $\sin$, and $\cos$ of initial features are very pertinent to the prediction task. Bounding outlier also results in a significant $2\%$ gain, which is not surprising since the dataset contains a lot of noise. It turns out splitting on the number of jets still makes a difference, although we expected it to be bigger. Finally, imputing the median does not help a lot, probably because bounding outlier achieves a similar effect.
 \section{Conclusion}
 \label{conclusion}
 
 In this paper, the performance of various algorithms is studied on Higgs boson dataset. To improve the accuracy of algorithms, we propose different pre-processing steps, which are selected based on prior exploratory data analysis. Then, we experimentally compare algorithms and evaluate the importance of each pre-processing step. As expected, there are huge differences in performance among baseline, both least squares, and both logistic regressions. We find out that some pre-processing steps are more crucial than others, however, each of them contributes to higher final accuracy.
 
-\pagebreak
+%\pagebreak
 
 \bibliography{references.bib}
